@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Post;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -17,20 +18,27 @@ class PostType extends AbstractType
     {
         $builder
             ->add('title', TextType::class, [
-                'help' => 'The title for your post',
+                'help' => 'The title of your post',
                 'required' => true
             ])
             ->add('shortDescription', TextType::class, [
-                'help' => 'A short description that best summary your post',
+                'help' => 'A short description that best summarize your post',
                 'required' => true
             ])
             ->add('body', TextareaType::class, [
-                'help' => 'The content of your post',
+                'help' => 'The actual content of your post',
                 'required' => true
+            ])
+            ->add('category', EntityType::class, [
+                'class' => 'App\Entity\Category',
+                'choice_label' => 'name',
+                'choice_value' => 'id',
+                'help' => 'Choose a category for your post'
             ])
             ->add('imageFile', FileType::class, [
                 'mapped' => false,
-                'help' => 'The image displayed with your post'
+                'required' => false,
+                'help' => 'Upload an image that will be displayed with your post'
             ])
             ->add('send', SubmitType::class, [
                 'label' => 'Submit',

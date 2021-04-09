@@ -8,14 +8,34 @@
 	<div class="card mb-3 shadow">
 		<div class="row">
 			<div class="col-lg-8 d-flex align-items-center">
-				<div class="card-body">
+				<header class="card-body">
 					<h1 class="card-title">{{ post.title }}</h1>
 					<hr class="my-1">
 					<p class="card-text lead">{{ post.shortDescription }}</p>
-				</div>
+				</header>
 			</div>
 			<div class="col-lg-4">
-				<div class="responsive-image" style="background-image: url('{{ post.image ? asset("uploads/images/#{post.image}") : asset('uploads/images/default.png') }}'); height: 300px;"></div>
+				<div class="responsive-image" style="background-image: url('{{ post.image ? asset(images_directory ~ post.image) : asset(images_directory ~ 'default.png') }}'); height: 400px;"></div>
+			</div>
+		</div>
+		<div class="card-footer">
+			<div class="row justify-content-between align-items-center">
+				<div class="col-md-auto mb-md-0 mb-3">
+					<button type="button" class="btn btn-outline-primary rounded-pill category-badge w-100" style="color: {{ post.category.color }}; border-color: {{ post.category.color }}">
+						<i class="bi bi-circle-fill" style="color: {{ post.category.color }}"></i>
+						{{ post.category.name }}
+					</button>
+				</div>
+				<div class="col-md-auto">
+					<div class="btn-group ml-auto w-100">
+						<a href="{{ path('post.edit', { id: post.id }) }}" class="btn btn-outline-secondary">
+							<i class="bi bi-pencil-square"></i>
+						</a>
+						<a href="{{ path('post.delete', { id: post.id }) }}" class="btn btn-outline-danger">
+							<i class="bi bi-trash"></i>
+						</a>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>

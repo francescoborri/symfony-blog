@@ -4,10 +4,11 @@ namespace App\Controller;
 
 use App\Entity\Post;
 use App\Form\PostType;
+use App\Repository\CategoryRepository;
 use App\Repository\PostRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -28,12 +29,31 @@ class PostController extends AbstractController
     }
 
     /**
-     * @Route("/list", name="list")
+     * @Route("s/", name="list")
      */
-    public function list(PostRepository $postRepository): Response
+    public function list(Request $request, PostRepository $postRepository, CategoryRepository $categoryRepository): Response
     {
+        $category = $request->query->has('category') ? $categoryRepository->find($request->query->get('category')) : null;
+
+        if ($category)
+            $posts = $postRepository->findBy([ 'category' => $category ]);
+        else
+            $posts = $postRepository->findAll();
+
         return $this->render('post/list.html.twig', [
-            'posts' => $postRepository->findAll()
+            'posts' => $posts,
+            'categories' => $categoryRepository->findAll(),
+            'selectedCategory' => $category
+        ]);
+    }
+
+    /**
+     * @Route("/read/{id}", name="read")
+     */
+    public function view(Post $post): Response
+    {
+        return $this->render('post/view.html.twig', [
+            'post' => $post
         ]);
     }
 
@@ -44,7 +64,6 @@ class PostController extends AbstractController
     {
         $post = new Post();
         $form = $this->createForm(PostType::class, $post);
-
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -61,7 +80,7 @@ class PostController extends AbstractController
                         $newFilename
                     );
                 } catch (FileException $exception) {
-                    $this->addFlash('error', 'The image can\'t be saved.');
+                    $this->addFlash('danger', 'The image can\'t be saved.');
                 }
 
                 $post->setImage($newFilename);
@@ -70,7 +89,7 @@ class PostController extends AbstractController
             $entityManagerInterface->persist($post);
             $entityManagerInterface->flush();
 
-            $this->addFlash('success', 'Post was created!');
+            $this->addFlash('success', 'Your post was created!');
             return $this->redirectToRoute('index');
         }
 
@@ -80,26 +99,64 @@ class PostController extends AbstractController
     }
 
     /**
-     * @Route("/view/{id}", name="view")
-     */
-    public function view(Post $post): Response
-    {
-        return $this->render('post/view.html.twig', [
-            'post' => $post
-        ]);
-    }
-
-    /**
      * @Route("/edit/{id}", name="edit")
      */
-    public function edit(Post $post)
+    public function edit(Post $post, Request $request, EntityManagerInterface $entityManagerInterface, SluggerInterface $sluggerInterface)
     {
+        $oldImage = $post->getImage();
+
+        $form = $this->createForm(PostType::class, $post);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $post = $form->getData();
+            $imageFile = $form->get('imageFile')->getData();
+
+            if ($imageFile) {
+                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFilename = $sluggerInterface->slug($originalFilename);
+                $newFilename  = $safeFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
+
+                try {
+                    $imageFile->move(
+                        $this->getParameter('images_directory'),
+                        $newFilename
+                    );
+                } catch (FileException $exception) {
+                    $this->addFlash('danger', 'The image can\'t be saved.');
+                }
+
+                if ($oldImage)
+                    unlink($this->getParameter('images_directory') . $oldImage);
+
+                $post->setImage($newFilename);
+            }
+
+            $entityManagerInterface->persist($post);
+            $entityManagerInterface->flush();
+
+            $this->addFlash('success', 'The post was edited!');
+            return $this->redirectToRoute('index');
+        }
+
+        return $this->render('post/edit.html.twig', [
+            'form' => $form->createView(),
+        ]);
     }
 
     /**
      * @Route("/delete/{id}", name="delete")
      */
-    public function delete(Post $post)
+    public function delete(Post $post, EntityManagerInterface $entityManagerInterface)
     {
+        if ($post->getImage())
+            unlink($this->getParameter('images_directory') . $post->getImage());
+        
+        $entityManagerInterface->remove($post);
+        $entityManagerInterface->flush();
+
+        $this->addFlash('success', 'The post was deleted!');
+
+        return $this->redirectToRoute('index');
     }
 }

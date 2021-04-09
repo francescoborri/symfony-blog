@@ -2,23 +2,26 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Category;
 use App\Entity\Post;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
 class AppFixtures extends Fixture
 {
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $objectManager)
     {
-        for ($i = 1; $i <= 50; $i++) {
-            $blog = new Post();
-            $blog->setTitle("Post $i");
-            $blog->setShortDescription("Short description for post $i");
-            $blog->setBody("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis nec massa leo. Cras laoreet lobortis orci, ac pharetra diam sollicitudin posuere. Ut suscipit lorem eu nisi fringilla, sed pulvinar est suscipit. Etiam semper tincidunt justo, malesuada suscipit sapien tristique vel. Sed quam justo, porttitor at eros eget, aliquet ultrices massa. Fusce posuere, libero egestas vestibulum congue, elit magna feugiat orci, eu aliquet ex turpis id nibh. Praesent egestas iaculis mollis. Sed eget dignissim metus, vitae luctus turpis. Duis gravida lacus eu ipsum cursus, at porta dui faucibus.");
-            $blog->setImage(null);
-            $manager->persist($blog);
-        }
+        $categories = [
+            ['Books', '#ed2d2d'],
+            ['Cinema', '#e88127'],
+            ['Food', '#f5dd05'],
+            ['Politics', '#14b82f'],
+            ['Travels', '#00a6e3'],
+        ];
 
-        $manager->flush();
+        foreach ($categories as $category)
+            $objectManager->persist((new Category())->setName($category[0])->setColor($category[1]));
+        
+        $objectManager->flush();
     }
 }
