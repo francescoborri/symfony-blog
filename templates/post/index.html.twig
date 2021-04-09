@@ -1,14 +1,7 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}
-	Blog
-{% endblock %}
-
 {% block body %}
-	<div class="card m-4">
-		<div class="card-body">
-			<h1 class="card-title text-center">Blog</h1>
-		</div>
+	<div class="container">
+		{% block content %}{% endblock %}
 	</div>
-	{% block content %}{% endblock %}
 {% endblock %}
