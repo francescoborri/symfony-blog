@@ -11,3 +11,20 @@ body {
 .category-badge {
     pointer-events: none;
 }
+
+.post {
+    transition: transform .2s;
+}
+
+.post:hover {
+    transform: scale(1.1);
+    z-index: 1000;
+}
+
+.post-img {
+    transition: ease-out .2s;
+}
+
+.post-img:hover {
+    transform: scale(1.2);
+}

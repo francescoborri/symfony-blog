@@ -18,3 +18,8 @@
 		</div>
 	</div>
 {% endblock %}
+
+{% block js %}
+	{{ parent() }}
+	<script src="{{ asset('js/inputfile-form-fix.js') }}"></script>
+{% endblock %}

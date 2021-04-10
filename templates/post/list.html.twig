@@ -35,10 +35,10 @@
 	<div class="row row-cols-lg-2 row-cols-1">
 		{% for post in posts %}
 			<div class="col mb-4">
-				<div class="card shadow h-100">
-					<div class="card-header responsive-image" style="background-image: url('{{ post.image ? asset(images_directory ~ post.image) : asset(images_directory ~ 'default.png') }}'); height: 300px;"></div>
+				<div class="card post shadow h-100">
+					<div class="card-header responsive-image" data-image-url="{{ post.image ? asset(posts_images_directory ~ post.image) : asset(posts_images_directory ~ 'default.png') }}" data-height="300px"></div>
 					<div class="card-header">
-						<button type="button" class="btn btn-outline-primary rounded-pill category-badge" style="color: {{ post.category.color }}; border-color: {{ post.category.color }}">
+						<button type="button" class="btn btn-outline-primary rounded-pill category-badge" data-color="{{ post.category.color }}">
 							<i class="bi bi-circle-fill" style="color: {{ post.category.color }}"></i>
 							{{ post.category.name }}
 						</button>
@@ -65,4 +65,10 @@
 			</div>
 		{% endfor %}
 	</div>
+{% endblock %}
+
+{% block js %}
+	{{ parent() }}
+	<script src="{{ asset('js/responsive-image.js') }}"></script>
+	<script src="{{ asset('js/category-badge.js') }}"></script>
 {% endblock %}

@@ -7,9 +7,9 @@ use App\Entity\Post;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
-class AppFixtures extends Fixture
+class CategoryFixtures extends Fixture
 {
-    public function load(ObjectManager $objectManager)
+    public function load(ObjectManager $manager)
     {
         $categories = [
             ['Books', '#ed2d2d'],
@@ -20,8 +20,8 @@ class AppFixtures extends Fixture
         ];
 
         foreach ($categories as $category)
-            $objectManager->persist((new Category())->setName($category[0])->setColor($category[1]));
+            $manager->persist((new Category())->setName($category[0])->setColor($category[1]));
         
-        $objectManager->flush();
+        $manager->flush();
     }
 }

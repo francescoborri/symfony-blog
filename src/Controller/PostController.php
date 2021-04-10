@@ -3,12 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\Post;
-use App\Form\PostType;
+use App\Form\PostFormType;
 use App\Repository\CategoryRepository;
 use App\Repository\PostRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -63,7 +62,7 @@ class PostController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManagerInterface, SluggerInterface $sluggerInterface)
     {
         $post = new Post();
-        $form = $this->createForm(PostType::class, $post);
+        $form = $this->createForm(PostFormType::class, $post);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -76,11 +75,11 @@ class PostController extends AbstractController
 
                 try {
                     $imageFile->move(
-                        $this->getParameter('images_directory'),
+                        $this->getParameter('absolute_posts_images_directory'),
                         $newFilename
                     );
                 } catch (FileException $exception) {
-                    $this->addFlash('danger', 'The image can\'t be saved.');
+                    $this->addFlash('danger', 'The image can\'t be saved');
                 }
 
                 $post->setImage($newFilename);
@@ -105,7 +104,7 @@ class PostController extends AbstractController
     {
         $oldImage = $post->getImage();
 
-        $form = $this->createForm(PostType::class, $post);
+        $form = $this->createForm(PostFormType::class, $post);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -119,15 +118,15 @@ class PostController extends AbstractController
 
                 try {
                     $imageFile->move(
-                        $this->getParameter('images_directory'),
+                        $this->getParameter('absolute_posts_images_directory'),
                         $newFilename
                     );
                 } catch (FileException $exception) {
-                    $this->addFlash('danger', 'The image can\'t be saved.');
+                    $this->addFlash('danger', 'The image can\'t be saved');
                 }
 
                 if ($oldImage)
-                    unlink($this->getParameter('images_directory') . $oldImage);
+                    unlink($this->getParameter('absolute_posts_images_directory') . $oldImage);
 
                 $post->setImage($newFilename);
             }
@@ -150,7 +149,7 @@ class PostController extends AbstractController
     public function delete(Post $post, EntityManagerInterface $entityManagerInterface)
     {
         if ($post->getImage())
-            unlink($this->getParameter('images_directory') . $post->getImage());
+            unlink($this->getParameter('absolute_posts_images_directory') . $post->getImage());
         
         $entityManagerInterface->remove($post);
         $entityManagerInterface->flush();

@@ -3,3 +3,4 @@ twig:
     form_themes: ['bootstrap_4_layout.html.twig']
     globals:
         images_directory: '%relative_images_directory%'
+        posts_images_directory: '%relative_posts_images_directory%'

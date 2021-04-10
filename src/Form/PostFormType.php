@@ -12,7 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class PostType extends AbstractType
+class PostFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -33,7 +33,8 @@ class PostType extends AbstractType
                 'class' => 'App\Entity\Category',
                 'choice_label' => 'name',
                 'choice_value' => 'id',
-                'help' => 'Choose a category for your post'
+                'help' => 'Choose a category for your post',
+                'attr' => [ 'class' => 'custom-select' ]
             ])
             ->add('imageFile', FileType::class, [
                 'mapped' => false,
