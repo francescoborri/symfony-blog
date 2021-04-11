@@ -32,7 +32,17 @@
 							</li>
 						{% endblock %}
 					</ul>
-					{% block navbar_right %}{% endblock %}
+					{% block navbar_right %}
+						<div class="dropdown">
+							<a class="text-light text-decoration-none" href="#" id="useractions-dropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								<i class="bi bi-person-circle" style="font-size: 25px;"></i>
+							</a>
+							<div class="dropdown-menu dropdown-menu-left dropdown-menu-lg-right" aria-labelledby="useractions-dropdown">
+								<a class="dropdown-item" href="{{ path('login') }}">Login</a>
+								<a class="dropdown-item" href="#">Sign in</a>
+							</div>
+						</div>
+					{% endblock %}
 				</div>
 			</nav>
 			<div class="container">

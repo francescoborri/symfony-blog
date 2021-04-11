@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\UserRepository;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
@@ -36,7 +37,7 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $profileIcon;
+    private $profilePicture;
 
     public function getId(): ?int
     {
@@ -114,14 +115,14 @@ class User implements UserInterface
         // $this->plainPassword = null;
     }
 
-    public function getProfileIcon(): ?string
+    public function getProfilePicture(): ?string
     {
-        return $this->profileIcon;
+        return $this->profilePicture;
     }
 
-    public function setProfileIcon(?string $profileIcon): self
+    public function setProfilePicture(?string $profilePicture): self
     {
-        $this->profileIcon = $profileIcon;
+        $this->profilePicture = $profilePicture;
 
         return $this;
     }

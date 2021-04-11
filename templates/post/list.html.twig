@@ -5,8 +5,7 @@
 {% endblock %}
 
 {% block navbar_right %}
-	{{ parent() }}
-	<div class="btn-group">
+	<div class="btn-group mr-3">
 		<a href="{{ path('post.new') }}" class="btn btn-outline-primary">Write a new post</a>
 		<div class="btn-group">
 			<button class="btn btn-outline-info dropdown-toggle flex-grow-1" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -23,6 +22,7 @@
 			</div>
 		</div>
 	</div>
+	{{ parent() }}
 {% endblock %}
 
 {% block content %}
